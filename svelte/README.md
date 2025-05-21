@@ -13,12 +13,12 @@ Build a todo list with Svelte.
    - The todo list is implemented in `src/lib/TodoList.svelte`.
    - It includes the following features:
      - Display a list of tasks.
-     - Add new tasks using the input field and the "Ajouter" button.
+     - Add new tasks using the input field and pressing Enter.
      - Toggle task completion with checkboxes.
-     - Filter tasks to show or hide completed tasks using the checkbox labeled "Afficher les tâches complétées".
+     - Filter tasks to show or hide completed tasks using the checkbox labeled "show completed".
 
 3. **Key Components**:
-   - The `todos` array stores the list of tasks, each with a `name` and `completed` status.
+   - The `todos` array stores the list of tasks, each with a `text` and `done` status.
    - The `addTodo` function adds a new task to the list and clears the input field.
    - The `showCompleted` variable controls the visibility of completed tasks.
 

@@ -1,42 +1,60 @@
 <script lang="ts">
-  let todos = [
+  type Todo = {
+    text: string;
+    done: boolean;
+  };
+
+  let todos = $state<Todo[]>([
     {
-      name: "Chocolats",
-      completed: true,
+      text: "Chocolats",
+      done: true,
     },
-  ];
-  let newTodo = "";
+  ]);
 
-  let showCompleted = false;
+  let showCompleted = $state<boolean>(false);
 
-  function addTodo(e: Event) {
-    e.preventDefault();
-    todos = [
-      ...todos,
-      {
-        name: newTodo,
-        completed: false,
-      },
-    ];
-    newTodo = ""
+  let filteredTodos = $derived(
+    [...todos].filter((t) => (showCompleted ? true : !t.done))
+  );
+
+  function addTodo(e: KeyboardEvent) {
+    if (e.key === "Enter") {
+      const todoEl = e.target as HTMLInputElement;
+
+      const text = todoEl.value;
+      const done = false;
+
+      todos = [...todos, { text, done }];
+      todoEl.value = "";
+    }
   }
+
+
 </script>
 
-<div>
+<div role="region" aria-label="Todo List">
   <span>Ma TODO liste</span>
-  <label>Afficher les tâches complétées<input type="checkbox" bind:checked={showCompleted}/></label>
-  <ul>
-    {#each todos.filter((todo) => showCompleted ? true : !todo.completed) as todo, i}
-      <li id={`key-${i}`}>
-        <label for={`input-${i}`}>{todo.name}</label>
-        <input type="checkbox" id={`input-${i}`} bind:checked={todo.completed} />
-      </li>
+  <label>
+    show completed
+    <input type="checkbox" onchange={() => (showCompleted = !showCompleted)} aria-label="Show completed tasks" />
+  </label>
+  <ul role="list">
+    <input placeholder="Add todo" type="text" onkeydown={addTodo} aria-label="Add a new task" />
+    {#each filteredTodos as todo}
+      <label>
+        {todo.text}
+        <input bind:checked={todo.done} type="checkbox" aria-label={`Mark ${todo.text} as done`} />
+      </label>
     {/each}
   </ul>
+  {JSON.stringify(todos)}
+  {JSON.stringify(filteredTodos)}
 </div>
 
-<div>
-  <label for="add-task-input">Ajouter une tâche</label>
-  <input id="add-task-input" type="text" bind:value={newTodo} />
-  <button onclick={addTodo}>Ajouter</button>
-</div>
+<style>
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+</style>
