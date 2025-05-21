@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ma Todo Liste</title>
+</head>
+
+<body>
+  <main>
+    <fieldset>
+      <legend>Ma TODO Liste</legend>
+      <ul id="todo-list">
+        <li id="chocolat">
+          <label for="chocolat-input">Chocolat</label>
+          <input id="chocolat-input" type="checkbox" />
+        </li>
+      </ul>
+      <button id="add-button">Ajouter</button>
+    </fieldset>
+
+    <dialog id="add-task-dialog" aria-labelledby="dialog-title">
+      <p id="dialog-title">Ajouter une nouvelle tâche</p>
+      <form id="add-task-form">
+        <label for="add-task-input">Nouvelle tâche (obligatoire)</label>
+        <input type="text" id="add-task-input" required />
+        <button type="submit">Ajouter</button>
+        <button type="button" onclick="addTaskDialog.close()">Annuler</button>
+      </form>
+    </dialog>
+  </main>
+
+  <script>
+    const toDoList = document.getElementById('todo-list')
+    const addButton = document.getElementById('add-button')
+    const addTaskDialog = document.getElementById('add-task-dialog')
+    const addTaskForm = document.getElementById('add-task-form')
+    const addTaskInput = document.getElementById('add-task-input')
+
+    addButton.addEventListener('click', () => {
+      addTaskDialog.showModal()
+      addTaskInput.focus()
+    })
+
+    addTaskForm.addEventListener('submit', addTask)
+
+    function createTaskElement(label) {
+      const inputId = `item_${Date.now()}`
+      const li = document.createElement('li')
+      const checkbox = document.createElement('input')
+      const lbl = document.createElement('label')
+
+      checkbox.type = 'checkbox'
+      checkbox.id = inputId
+      lbl.htmlFor = inputId
+      lbl.textContent = label
+
+      li.id = `${inputId}_${label.replace(/[^\w\-]/g, '_')}`
+      li.appendChild(lbl)
+      li.appendChild(checkbox)
+
+      return li
+    }
+
+    function addTask(e) {
+      e.preventDefault()
+
+      const taskValue = addTaskInput.value.trim()
+      if (!taskValue) return
+
+      const taskElement = createTaskElement(taskValue)
+      toDoList.appendChild(taskElement)
+
+      addTaskInput.value = ''
+      addTaskDialog.close()
+    }
+  </script>
+</body>
+
+</html>
